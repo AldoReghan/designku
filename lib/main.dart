@@ -170,79 +170,80 @@ class _HomeState extends State<Home> {
             Positioned(
               top: 20,
               child: Container(
-                height: 460,
+                height: MediaQuery.of(context).size.height/1.4,
                 width: MediaQuery.of(context).size.width,
                 child: Swiper(
                   itemBuilder: (context, index) {
-                    return Container(
-                        // height: MediaQuery.of(context).size.height,
-                        decoration: BoxDecoration(
+                  return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: FlipCard(
+                      front: GestureDetector(
+                        onDoubleTap: () => print("object"),
+                        child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
+                          child: Image.network(
+                            "http://via.placeholder.com/288x188",
+                            fit: BoxFit.fill,
+                          ),
                         ),
-                        child: FlipCard(
-                            front: GestureDetector(
-                              onDoubleTap: () => print("object"),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.network(
-                                  "http://via.placeholder.com/288x188",
-                                  fit: BoxFit.fill,
+                      ),
+                      back: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.white)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "The dark is rising",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontFamily: 'Pacifico',
+                                              color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    Padding(
+                                        padding:
+                                            const EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.favorite,
+                                          color: Colors.red,
+                                          size: 30,
+                                        )),
+                                  ],
                                 ),
-                              ),
+                                Divider(
+                                  thickness: 0.5,
+                                  color: Colors.blue,
+                                ),
+                                Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                        height: 300,
+                                        color: Colors.white,
+                                        child: ListView())),
+                                Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: Row(children: <Widget>[]))
+                              ],
                             ),
-                            back: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.white)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              "The dark is rising",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontFamily: 'Pacifico',
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Icon(
-                                              Icons.favorite, color: Colors.red, size: 30,
-                                            )
-                                          ),
-                                        ],
-                                      ),
-                                      Divider(
-                                        thickness: 0.5,
-                                        color: Colors.blue,
-                                      ),
-                                      Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Container(
-                                              height: 300,
-                                              color: Colors.white,
-                                              child: ListView())),
-                                      Padding(
-                                        padding: EdgeInsets.all(8),
-                                        child: Row(
-                                          children: <Widget>[
-                                            
-                                          ]
-                                        )
-                                      )
-                                    ],
-                                  ),
-                                ))));
+                          )
+                        )
+                      )
+                    );
                   },
                   itemCount: 3,
                   viewportFraction: 0.8,
