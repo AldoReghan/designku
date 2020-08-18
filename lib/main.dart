@@ -1,3 +1,4 @@
+import 'package:designku/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter/services.dart';
@@ -141,9 +142,14 @@ class _HomeState extends State<Home> {
             ),
           ),
           ListTile(
-            title: Text(
-              "Login",
-              style: TextStyle(color: Colors.white),
+            title: GestureDetector(
+              onTap: () => {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))
+              },
+              child: Text(
+                "Login",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
             leading: Icon(
               Icons.account_circle,
