@@ -1,3 +1,4 @@
+import 'package:designku/karyaPage/showKarya.dart';
 import 'package:designku/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -95,9 +96,14 @@ class _HomeState extends State<Home> {
             ),
           ),
           ListTile(
-            title: Text(
-              "Karya",
-              style: TextStyle(color: Colors.white),
+            title: GestureDetector(
+              onTap: ()=>{
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>showKarya()))
+              },
+              child: Text(
+                "Karya",
+                style: TextStyle(color: Colors.white),
+              ),
             ),
             leading: Icon(
               Icons.image,

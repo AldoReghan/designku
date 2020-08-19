@@ -34,7 +34,9 @@ class _AddKaryaState extends State<AddKarya> {
                       BoxShadow(
                         blurRadius: 7, color: Colors.grey, offset: Offset(0, 5)
                       )]),
-                    child: Image.network("http://via.placeholder.com/288x188"),
+                    child: ClipRect(
+                      child: Image.network("http://via.placeholder.com/288x188"),
+                    )
                 ),
               ),
               Padding(
