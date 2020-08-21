@@ -98,7 +98,7 @@ class _HomeState extends State<Home> {
           ListTile(
             title: GestureDetector(
               onTap: ()=>{
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>showKarya()))
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ShowKarya()))
               },
               child: Text(
                 "Karya",

@@ -5,17 +5,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: showKarya(),
+      home: ShowKarya(),
     );
   }
 }
 
-class showKarya extends StatefulWidget {
+class ShowKarya extends StatefulWidget {
   @override
-  _showKaryaState createState() => _showKaryaState();
+  _ShowKaryaState createState() => _ShowKaryaState();
 }
 
-class _showKaryaState extends State<showKarya> {
+class _ShowKaryaState extends State<ShowKarya> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -21,6 +21,7 @@ class _AddKaryaState extends State<AddKarya> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Tambah Karya"),
+        backgroundColor: Colors.black,
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -40,13 +41,42 @@ class _AddKaryaState extends State<AddKarya> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.all(16),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    icon: Icon(Icons.collections),
-                    hintText: "Nama Karya"
+                padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.white)
+                  ),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.collections),
+                      hintText: "Nama Karya",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      )
+                    ),
                   ),
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 10, left: 30, right: 30),
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.white)
+                  ),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: 'Tanggal rilis',
+                      icon: Icon(Icons.calendar_today),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      )
+                    ),
+                  ),
+                ),  
               )
             ],
           ),
