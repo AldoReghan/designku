@@ -1,9 +1,11 @@
 import 'package:designku/karyaPage/showKarya.dart';
 import 'package:designku/login.dart';
+import 'package:designku/providers/usersProviders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter/services.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,10 +17,15 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(canvasColor: Colors.black),
-      home: Home(),
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<UsersProvider>.value(value: UsersProvider(),)
+      ],
+      child: MaterialApp(
+        theme: ThemeData(canvasColor: Colors.black),
+        home: Home(),
+        debugShowCheckedModeBanner: false,
+      )
     );
   }
 }
