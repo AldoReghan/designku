@@ -1,9 +1,13 @@
 // import 'package:designku/main.dart';
-import 'package:designku/providers/usersProviders.dart';
+import 'dart:convert';
+
+import 'package:designku/main.dart';
 import 'package:designku/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import './models/usersModel.dart';
+import 'package:http/http.dart' as http;
 
 class MyApp extends StatelessWidget {
   @override
@@ -21,28 +25,53 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController username = TextEditingController();
-  final TextEditingController password = TextEditingController();
+
+  UsersModel usersModel;
+  bool _isLoading = true;
+
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   final GlobalKey<FormBuilderState> _key = GlobalKey<FormBuilderState>();
 
-  void submit(BuildContext context) {
-    Provider.of<UsersProvider>(context, listen: false)
-        .userStoreLogin(username.text, password.text)
-        .then((res) {
-      if (res) {
-        print("success");
-        // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Home()));
-        // setState(() {
-        //   print("success");
-        //   // Navigator.of(context).pushAndRemoveUntil(
-        //   //     MaterialPageRoute(builder: (context) => Home()),
-        //   //     (route) => false);
-        // });
-      } else {
-        print("error");
-      }
+  signIn(String username, String password)async{
+    
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    
+    final url = 'http://192.168.43.184:3000/login';
+    final response = await http.post(url, body: {
+      'username' : username,
+      'password' : password
     });
+
+    final data = jsonDecode(response.body)['data'];
+    String token = jsonDecode(response.body)['token'];
+    bool status = jsonDecode(response.body)['error'];
+
+    if (status == false) {
+      setState(() {
+        _isLoading = false;
+      });
+      sharedPreferences.setString('token', token);
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+        builder: (context) => Home()), (route) => false);
+    }else{
+      setState(() {
+        _isLoading = false;
+      });
+      print(data);
+    }
+  }
+
+  submit(){
+    if (usernameController == "" || passwordController == "") {
+      print("password or username kosong");
+    }else{
+      setState(() {
+        _isLoading = true;
+      });
+      signIn(usernameController.text, passwordController.text);
+    }
   }
 
   @override
@@ -75,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: Colors.white)),
                       child: TextFormField(
-                        controller: username,
+                        controller: usernameController,
                         decoration: InputDecoration(
                             hintText: 'Username or Email',
                             hintStyle: TextStyle(color: Colors.grey),
@@ -97,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: Colors.white)),
                       child: TextFormField(
-                        controller: password,
+                        controller: passwordController,
                         decoration: InputDecoration(
                             hintText: 'Password',
                             hintStyle: TextStyle(color: Colors.grey),
@@ -118,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                     padding: EdgeInsets.only(top: 20, left: 30, right: 30),
                     child: GestureDetector(
                       onTap: () {
-                        submit(context);
+                        submit();
                       },
                       child: Container(
                         height: 50,

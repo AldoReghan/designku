@@ -6,6 +6,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:flutter/services.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -33,9 +34,39 @@ class MyApp extends StatelessWidget {
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
+  
 }
 
 class _HomeState extends State<Home> {
+  
+  SharedPreferences sharedPreferences;
+
+  bool _isLoggedIn = true;
+
+  checkloginStatus() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    if(sharedPreferences.get("token") == null){
+      _isLoggedIn = false;
+      print("Anda belum login");
+    }else{
+      _isLoggedIn = true;
+      print("Anda sudah login");
+    }
+  }
+
+  logoutUser(){
+    sharedPreferences.clear();
+    sharedPreferences.commit();
+    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+      builder: (context) => Home()), (route) => false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkloginStatus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -157,9 +188,18 @@ class _HomeState extends State<Home> {
           ListTile(
             title: GestureDetector(
               onTap: () => {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))
+                if (_isLoggedIn == false) {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))
+                }else{
+                  logoutUser()
+                }
               },
-              child: Text(
+              child: _isLoggedIn == false 
+              ? Text(
+                "Logout",
+                style: TextStyle(color: Colors.white),
+              )
+              : Text(
                 "Login",
                 style: TextStyle(color: Colors.white),
               ),
@@ -169,16 +209,6 @@ class _HomeState extends State<Home> {
               color: Colors.white,
             ),
           ),
-          ListTile(
-            title: Text(
-              "Logout",
-              style: TextStyle(color: Colors.white),
-            ),
-            leading: Icon(
-              Icons.exit_to_app,
-              color: Colors.white,
-            ),
-          )
         ],
       )),
       body: SizedBox.expand(
