@@ -1,4 +1,4 @@
-import 'package:designku/karyaPage/addKarya.dart';
+import 'package:designku/Page/karyaPage/addKarya.dart';
 import 'package:flutter/material.dart';
 
 class MyApp extends StatelessWidget {
@@ -21,14 +21,21 @@ class _ShowKaryaState extends State<ShowKarya> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text("Karya", style: TextStyle(color: Colors.white,)),
+        title: Text("Karya",
+            style: TextStyle(
+              color: Colors.white,
+            )),
       ),
       body: Center(
-        child: Text('Karya Empty'),
+        child: Text(
+          'Karya kosong',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddKarya()));
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => AddKarya()));
         },
         child: Icon(Icons.add),
       ),

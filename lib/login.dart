@@ -25,7 +25,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   UsersModel usersModel;
   bool _isLoading = true;
 
@@ -34,39 +33,42 @@ class _LoginPageState extends State<LoginPage> {
 
   final GlobalKey<FormBuilderState> _key = GlobalKey<FormBuilderState>();
 
-  signIn(String username, String password)async{
-    
+  signIn(String username, String password) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    
-    final url = 'http://192.168.43.184:3000/login';
-    final response = await http.post(url, body: {
-      'username' : username,
-      'password' : password
-    });
 
-    final data = jsonDecode(response.body)['data'];
+    final url = 'http://192.168.43.184:3000/login';
+    final response = await http
+        .post(url, body: {'username': username, 'password': password});
+
+    final data = jsonDecode(response.body)['data'][0];
+    int iduser = data['iduser'];
+    String email = data['email'];
     String token = jsonDecode(response.body)['token'];
+    String pesan = jsonDecode(response.body)['message'];
     bool status = jsonDecode(response.body)['error'];
 
     if (status == false) {
       setState(() {
         _isLoading = false;
       });
+      print(pesan);
+      print(data['username']);
+      sharedPreferences.setString("email", email);
       sharedPreferences.setString('token', token);
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-        builder: (context) => Home()), (route) => false);
-    }else{
+      sharedPreferences.setInt('iduser', iduser);
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => Home()), (route) => false);
+    } else {
       setState(() {
         _isLoading = false;
       });
-      print(data);
     }
   }
 
-  submit(){
+  submit() {
     if (usernameController == "" || passwordController == "") {
       print("password or username kosong");
-    }else{
+    } else {
       setState(() {
         _isLoading = true;
       });
@@ -105,6 +107,7 @@ class _LoginPageState extends State<LoginPage> {
                           border: Border.all(color: Colors.white)),
                       child: TextFormField(
                         controller: usernameController,
+                        style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                             hintText: 'Username or Email',
                             hintStyle: TextStyle(color: Colors.grey),
@@ -127,6 +130,7 @@ class _LoginPageState extends State<LoginPage> {
                           border: Border.all(color: Colors.white)),
                       child: TextFormField(
                         controller: passwordController,
+                        style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
                             hintText: 'Password',
                             hintStyle: TextStyle(color: Colors.grey),

@@ -1,4 +1,4 @@
-import 'package:designku/karyaPage/showKarya.dart';
+import 'package:designku/Page/karyaPage/showKarya.dart';
 import 'package:designku/login.dart';
 import 'package:designku/providers/usersProviders.dart';
 import 'package:flutter/material.dart';
@@ -19,46 +19,56 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<UsersProvider>.value(value: UsersProvider(),)
-      ],
-      child: MaterialApp(
-        theme: ThemeData(canvasColor: Colors.black),
-        home: Home(),
-        debugShowCheckedModeBanner: false,
-      )
-    );
+        providers: [
+          ChangeNotifierProvider<UsersProvider>.value(
+            value: UsersProvider(),
+          )
+        ],
+        child: MaterialApp(
+          theme: ThemeData(canvasColor: Colors.black),
+          home: Home(),
+          debugShowCheckedModeBanner: false,
+        ));
   }
 }
 
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
-  
 }
 
 class _HomeState extends State<Home> {
-  
   SharedPreferences sharedPreferences;
 
-  bool _isLoggedIn = true;
+  bool _isLoggedIn;
+  String email, token;
+  int iduser;
 
   checkloginStatus() async {
     sharedPreferences = await SharedPreferences.getInstance();
-    if(sharedPreferences.get("token") == null){
-      _isLoggedIn = false;
+    setState(() {
+      iduser = sharedPreferences.get("iduser");
+      email = sharedPreferences.get("email");
+      token = sharedPreferences.get("token");
+    });
+    if (token == null && iduser == null) {
+      setState(() {
+        _isLoggedIn = false;
+      });
       print("Anda belum login");
-    }else{
-      _isLoggedIn = true;
+    } else {
+      setState(() {
+        _isLoggedIn = true;
+      });
       print("Anda sudah login");
     }
   }
 
-  logoutUser(){
+  logoutUser() {
     sharedPreferences.clear();
     sharedPreferences.commit();
-    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
-      builder: (context) => Home()), (route) => false);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => Home()), (route) => false);
   }
 
   @override
@@ -95,7 +105,7 @@ class _HomeState extends State<Home> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           Container(
-            height: 210,
+            height: 215,
             child: DrawerHeader(
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,12 +123,14 @@ class _HomeState extends State<Home> {
                 SizedBox(
                   height: 5,
                 ),
-                Text(
-                  "email@gmail.com",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                )
+                email != null
+                    ? Text(
+                        email,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      )
+                    : Text("")
               ],
             )),
             color: Colors.blue,
@@ -135,8 +147,11 @@ class _HomeState extends State<Home> {
           ),
           ListTile(
             title: GestureDetector(
-              onTap: ()=>{
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ShowKarya()))
+              onTap: () => {
+                iduser == null
+                    ? print("please login to access karya")
+                    : Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => ShowKarya()))
               },
               child: Text(
                 "Karya",
@@ -168,16 +183,18 @@ class _HomeState extends State<Home> {
               color: Colors.white,
             ),
           ),
-          ListTile(
-            title: Text(
-              "Settings",
-              style: TextStyle(color: Colors.white),
-            ),
-            leading: Icon(
-              Icons.settings,
-              color: Colors.white,
-            ),
-          ),
+          iduser == null
+              ? Container()
+              : ListTile(
+                  title: Text(
+                    "Settings",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  leading: Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                  ),
+                ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0, left: 8.0),
             child: Divider(
@@ -188,26 +205,33 @@ class _HomeState extends State<Home> {
           ListTile(
             title: GestureDetector(
               onTap: () => {
-                if (_isLoggedIn == false) {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()))
-                }else{
-                  logoutUser()
-                }
+                if (_isLoggedIn == false)
+                  {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => LoginPage()))
+                  }
+                else
+                  {logoutUser()}
               },
-              child: _isLoggedIn == false 
-              ? Text(
-                "Logout",
-                style: TextStyle(color: Colors.white),
-              )
-              : Text(
-                "Login",
-                style: TextStyle(color: Colors.white),
-              ),
+              child: _isLoggedIn == false
+                  ? Text(
+                      "Login",
+                      style: TextStyle(color: Colors.white),
+                    )
+                  : Text(
+                      "Logout",
+                      style: TextStyle(color: Colors.white),
+                    ),
             ),
-            leading: Icon(
-              Icons.account_circle,
-              color: Colors.white,
-            ),
+            leading: _isLoggedIn == false
+                ? Icon(
+                    Icons.account_circle,
+                    color: Colors.white,
+                  )
+                : Icon(
+                    Icons.exit_to_app,
+                    color: Colors.white,
+                  ),
           ),
         ],
       )),
@@ -219,80 +243,78 @@ class _HomeState extends State<Home> {
             Positioned(
               top: 20,
               child: Container(
-                height: MediaQuery.of(context).size.height/1.4,
+                height: MediaQuery.of(context).size.height / 1.4,
                 width: MediaQuery.of(context).size.width,
                 child: Swiper(
                   itemBuilder: (context, index) {
-                  return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: FlipCard(
-                      front: GestureDetector(
-                        onDoubleTap: () => print("object"),
-                        child: ClipRRect(
+                    return Container(
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          child: Image.network(
-                            "http://via.placeholder.com/288x188",
-                            fit: BoxFit.fill,
-                          ),
                         ),
-                      ),
-                      back: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.white)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          "The dark is rising",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontFamily: 'Pacifico',
-                                              color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Padding(
-                                        padding:
-                                            const EdgeInsets.all(8.0),
-                                        child: Icon(
-                                          Icons.favorite,
-                                          color: Colors.red,
-                                          size: 30,
-                                        )),
-                                  ],
+                        child: FlipCard(
+                            front: GestureDetector(
+                              onDoubleTap: () => print("object"),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  "http://via.placeholder.com/288x188",
+                                  fit: BoxFit.fill,
                                 ),
-                                Divider(
-                                  thickness: 0.5,
-                                  color: Colors.blue,
-                                ),
-                                Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                        height: 300,
-                                        color: Colors.white,
-                                        child: ListView())),
-                                Padding(
-                                    padding: EdgeInsets.all(8),
-                                    child: Row(children: <Widget>[]))
-                              ],
+                              ),
                             ),
-                          )
-                        )
-                      )
-                    );
+                            back: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.white)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Text(
+                                                "The dark is rising",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontFamily: 'Pacifico',
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                          Spacer(),
+                                          Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Icon(
+                                                Icons.favorite_border,
+                                                color: Colors.white,
+                                                size: 30,
+                                              )),
+                                        ],
+                                      ),
+                                      Divider(
+                                        thickness: 0.5,
+                                        color: Colors.blue,
+                                      ),
+                                      Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                              height: 300,
+                                              color: Colors.white,
+                                              child: ListView())),
+                                      Padding(
+                                          padding: EdgeInsets.all(8),
+                                          child: Row(children: <Widget>[]))
+                                    ],
+                                  ),
+                                ))));
                   },
                   itemCount: 3,
                   viewportFraction: 0.8,
@@ -325,7 +347,7 @@ class _HomeState extends State<Home> {
                         children: <Widget>[
                           Center(
                             child: Container(
-                              height: 10,
+                              height: 8,
                               width: 70,
                               decoration: BoxDecoration(
                                   color: Colors.white,
