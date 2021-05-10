@@ -16,7 +16,7 @@ class UsersProvider extends ChangeNotifier{
   // }
 
   Future<bool> userStoreLogin(String username, String password) async {
-    final url = 'http://192.168.43.184:3000/login';
+    final url = Uri.parse('http://192.168.43.184:3000/login');
     final response = await http.post(url, body: {
       'username' : username,
       'password' : password

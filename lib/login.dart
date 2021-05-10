@@ -36,9 +36,8 @@ class _LoginPageState extends State<LoginPage> {
   signIn(String username, String password) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
-    final url = 'http://192.168.43.184:3000/login';
-    final response = await http
-        .post(url, body: {'username': username, 'password': password});
+    final url = Uri.parse('http://192.168.43.184:3000/login');
+    final response = await http.post(url, body: {'username': username, 'password': password});
 
     final data = jsonDecode(response.body)['data'][0];
     int iduser = data['iduser'];
