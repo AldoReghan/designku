@@ -34,6 +34,7 @@ dependencies:
   http:
   flutter_form_builder: 
   shared_preferences: ^0.5.10
+  draggable_bottom_sheet: ^0.1.2
 
 dev_dependencies:
   flutter_test:
